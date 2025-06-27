@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: #faf7f0;
+    color: #1f2937;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-red-800 text-white px-6 py-3 rounded-full font-medium hover:bg-red-900 transition-colors duration-200;
+  }
+  
+  .btn-secondary {
+    @apply bg-white text-red-800 border border-red-800 px-6 py-3 rounded-full font-medium hover:bg-red-50 transition-colors duration-200;
+  }
+  
+  .card {
+    @apply bg-white rounded-2xl shadow-sm border border-gray-100;
+  }
+  
+  .food-card {
+    @apply bg-red-800 text-white rounded-2xl p-4 shadow-lg;
+  }
+}
+
+@layer utilities {
+  .text-shadow {
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .bg-gradient-red {
+    background: linear-gradient(135deg, #991b1b 0%, #7f1d1d 100%);
+  }
+}
