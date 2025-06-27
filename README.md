@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # MakanBar - Food Ordering App
 
 A modern React.js food ordering application built with Vite, Tailwind CSS, Framer Motion, and Firebase.
@@ -77,3 +78,6 @@ The app is ready to be deployed to:
 ## License
 
 MIT License
+=======
+# food-tsabit
+>>>>>>> bccf7f0d639e409b3a77a88aabd4bfb77cfeaac9
