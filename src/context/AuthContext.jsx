@@ -40,12 +40,26 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (email, password, name) => {
     try {
-      if (!isFirebaseConfigured || !auth || typeof auth.createUserWithEmailAndPassword === 'undefined') {
-        throw new Error('Firebase not configured');
+      if (!isFirebaseConfigured || !auth || typeof createUserWithEmailAndPassword === 'undefined') {
+        // Demo mode - create mock user
+        const mockUser = {
+          uid: 'demo-' + Date.now(),
+          email: email,
+          displayName: name,
+          role: email === 'admin@makanbar.com' ? 'admin' : 'user'
+        };
+        setUser(mockUser);
+        return { user: mockUser };
       }
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       if (userCredential.user && updateProfile) {
         await updateProfile(userCredential.user, { displayName: name });
+        // Set admin role for admin email
+        const updatedUser = {
+          ...userCredential.user,
+          role: email === 'admin@makanbar.com' ? 'admin' : 'user'
+        };
+        setUser(updatedUser);
       }
       return userCredential;
     } catch (error) {
@@ -55,10 +69,30 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      if (!isFirebaseConfigured || !auth || typeof auth.signInWithEmailAndPassword === 'undefined') {
-        throw new Error('Firebase not configured');
+      if (!isFirebaseConfigured || !auth || typeof signInWithEmailAndPassword === 'undefined') {
+        // Demo mode - allow specific demo credentials
+        if ((email === 'demo@makanbar.com' && password === 'demo123') ||
+            (email === 'admin@makanbar.com' && password === 'admin123')) {
+          const mockUser = {
+            uid: 'demo-' + Date.now(),
+            email: email,
+            displayName: email === 'admin@makanbar.com' ? 'Admin User' : 'Demo User',
+            role: email === 'admin@makanbar.com' ? 'admin' : 'user'
+          };
+          setUser(mockUser);
+          return { user: mockUser };
+        } else {
+          throw new Error('Invalid credentials. Use demo@makanbar.com/demo123 or admin@makanbar.com/admin123');
+        }
       }
-      return await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      // Set admin role for admin email
+      const updatedUser = {
+        ...userCredential.user,
+        role: email === 'admin@makanbar.com' ? 'admin' : 'user'
+      };
+      setUser(updatedUser);
+      return userCredential;
     } catch (error) {
       throw error;
     }
@@ -66,7 +100,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      if (auth && typeof auth.signOut === 'function') {
+      if (auth && typeof signOut === 'function') {
         await signOut(auth);
       } else {
         setUser(null);
@@ -95,7 +129,16 @@ export const AuthProvider = ({ children }) => {
     try {
       if (isFirebaseConfigured && auth && typeof onAuthStateChanged === 'function') {
         unsubscribe = onAuthStateChanged(auth, (user) => {
-          setUser(user);
+          if (user) {
+            // Set admin role for admin email
+            const updatedUser = {
+              ...user,
+              role: user.email === 'admin@makanbar.com' ? 'admin' : 'user'
+            };
+            setUser(updatedUser);
+          } else {
+            setUser(null);
+          }
           setLoading(false);
         });
       } else {
