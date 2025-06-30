@@ -8,7 +8,7 @@ const PaymentMethods = [
   {
     id: 'bank',
     name: 'Bank Transfer',
-    icon: '/images/bank-logo.png',
+    icon: '/images/ban.png',
     type: 'Transfer Bank',
     description: 'BCA, BNI, BRI, Mandiri',
     color: 'bg-blue-100 text-blue-800'
